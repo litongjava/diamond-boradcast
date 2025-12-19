@@ -9,7 +9,7 @@ import com.litongjava.tio.boot.admin.config.TioAdminHandlerConfiguration;
 import com.litongjava.tio.boot.admin.config.TioAdminInterceptorConfiguration;
 import com.litongjava.tio.boot.admin.config.TioAdminMongoDbConfiguration;
 import com.litongjava.tio.boot.admin.config.TioAdminRedisDbConfiguration;
-import com.litongjava.tio.boot.admin.handler.SystemFileTencentCosHandler;
+import com.litongjava.tio.boot.admin.handler.system.SystemFileTencentCosHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
@@ -18,11 +18,12 @@ public class AdminAppConfig {
 
   @Initialization
   public void config() {
+    String[] permitUrls = { "/boradcast/**" };
     // 配置数据库相关
     new TioAdminDbConfiguration().config();
     new TioAdminRedisDbConfiguration().config();
     new TioAdminMongoDbConfiguration().config();
-    new TioAdminInterceptorConfiguration().config();
+    new TioAdminInterceptorConfiguration(permitUrls).config();
     new TioAdminHandlerConfiguration().config();
 
     // 获取 HTTP 请求路由器
@@ -34,7 +35,6 @@ public class AdminAppConfig {
       r.add("/api/system/file/upload", systemUploadHandler::upload);
       r.add("/api/system/file/url", systemUploadHandler::getUrl);
     }
-
 
     // 配置控制器
     new TioAdminControllerConfiguration().config();
